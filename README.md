@@ -9,6 +9,8 @@ Servidor: https://github.com/limifly/ntpserver ; Version: 1.0
 
 Cliente: https://github.com/KikyTokamuro/tinyntp ; Version: 1.0
 
+Dentro del directorio ntp-docker, se encontrara 2 carpetas una correspondiente al cliente y otra al servidor con sus respectivos dockerfiles y codigos fuente.
+
 ### Instalación
 Necesario instalar docker, para poder contruir e iniciar las imagenes.
 
