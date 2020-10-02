@@ -9,12 +9,12 @@ Servidor: https://github.com/limifly/ntpserver ; Version: 1.0
 
 Cliente: https://github.com/KikyTokamuro/tinyntp ; Version: 1.0
 
-### installation
-Necesario instalar docker para poder contruit e iniciar las imagenes.
+### Instalación
+Necesario instalar docker, para poder contruir e iniciar las imagenes.
 
 https://docs.docker.com/engine/install/
 
-### usage
+### Uso
 
 Para construir la imagen ocupamos:
 ```bash
