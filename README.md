@@ -28,5 +28,5 @@ $ docker run -ti iamge_id bash
 ```
 ### Polymorph
 Video que muestra el proceso de intercepcion y modificacion de paquetes NTP
-[![Interceptacion de Paquetes NTP](https://img.gifyoutube.com/vi/T43WTYmAhE4/0.gif)](https://www.youtube.com/watch?v=T43WTYmAhE4)
+[![Interceptacion de Paquetes NTP](https://share.gifyoutube.com/T43WTYmAhE4.gif)](https://www.youtube.com/watch?v=T43WTYmAhE4)
 ### test
