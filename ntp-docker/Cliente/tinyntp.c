@@ -54,16 +54,16 @@ const char *argp_program_bug_address = "<kiky.tokamuro@yandex.ru>";
 static char doc[] = "tinyntp - Tiny NTP client";
 
 // Options
-static struct argp_option options[] = { 
+static struct argp_option options[] = {
     {"hostname", 'h', "HOSTNAME", 0, "Hostname of NTP server (default \"0.europe.pool.ntp.org\")"},
     {"port", 'p', "PORT", 0, "Port of NTP server (default: 123)"},
-    {0} 
+    {0}
 };
 
 // Arguments parser
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     struct arguments *arguments = state->input;
-    
+
     switch (key) {
         case 'h': arguments->hostname = arg; break;
         case 'p': arguments->port = atoi(arg); break;
@@ -82,85 +82,76 @@ void err(char *message) {
 }
 
 
-int main(int argc, char **argv) 
-{
-    while (1)
+int main(int argc, char **argv)
+{   int x = 100;
+    while (x<=100)
     {
-        int i;
-        printf("Ingrese 1 para NTP\n");
-        printf("Ingrese 2 para cerrar\n");
-        scanf("%d", &i);
-    
 
-        if (i==1)
-        {
-            struct arguments arguments;
+          struct arguments arguments;
 
-            // Default arguments
-            arguments.hostname = "0.europe.pool.ntp.org";
-            arguments.port = 123;
+          // Default arguments
+          arguments.hostname = "0.europe.pool.ntp.org";
+          arguments.port = 123;
 
-             // Arguments parse
-             argp_parse(&argp, argc, argv, 0, 0, &arguments);
-             // Creating NTP packet
-             ntp_packet ntp_p = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-             memset(&ntp_p, 0, sizeof(ntp_packet));
+           // Arguments parse
+           argp_parse(&argp, argc, argv, 0, 0, &arguments);
+           // Creating NTP packet
+           ntp_packet ntp_p = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+           memset(&ntp_p, 0, sizeof(ntp_packet));
 
-            // Set li = 0 (00), vn = 3 (011), mode = 3 (011)
-             // 0x1b = 00011011
-             *((char *) &ntp_p + 0) = 0x1b;
+          // Set li = 0 (00), vn = 3 (011), mode = 3 (011)
+           // 0x1b = 00011011
+           *((char *) &ntp_p + 0) = 0x1b;
 
-            struct sockaddr_in addr;
-            struct hostent *ip;
+          struct sockaddr_in addr;
+          struct hostent *ip;
 
-             // Creating socket
-             int socket_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-             if (socket_fd < 0)
-             err("ERROR: Can't opening socket");
+           // Creating socket
+           int socket_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+           if (socket_fd < 0)
+           err("ERROR: Can't opening socket");
 
-            // Geting hostname
-            ip = gethostbyname(arguments.hostname);
-            if (ip == NULL)
-               err("ERROR: Can't finding hostname");
+          // Geting hostname
+          ip = gethostbyname(arguments.hostname);
+          if (ip == NULL)
+             err("ERROR: Can't finding hostname");
 
-            // Zeroing address struct
-            bzero((char *) &addr, sizeof(addr));
+          // Zeroing address struct
+          bzero((char *) &addr, sizeof(addr));
 
-            addr.sin_family = AF_INET;
+          addr.sin_family = AF_INET;
 
-            // Copying IP to address struct
-            bcopy((char *) ip->h_addr_list[0], (char *) &addr.sin_addr.s_addr, ip->h_length);
+          // Copying IP to address struct
+          bcopy((char *) ip->h_addr_list[0], (char *) &addr.sin_addr.s_addr, ip->h_length);
 
-            // Saving port to address struct
-            addr.sin_port = htons(arguments.port);
+          // Saving port to address struct
+          addr.sin_port = htons(arguments.port);
 
-            // Connecting
-            if (connect(socket_fd, (struct sockaddr *) &addr, sizeof(addr)) < 0)
-                err("ERROR: Can't connect");
+          // Connecting
+          if (connect(socket_fd, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+              err("ERROR: Can't connect");
 
-            // Sending NTP packet
-            if (write(socket_fd, (char *) &ntp_p, sizeof(ntp_packet)) < 0)
-                err("ERROR: Can't writing to socket");
+          // Sending NTP packet
+          if (write(socket_fd, (char *) &ntp_p, sizeof(ntp_packet)) < 0)
+              err("ERROR: Can't writing to socket");
 
-            // Reading responce
-            if (read(socket_fd, (char *) &ntp_p, sizeof(ntp_packet)) < 0)
-                err("ERROR: Can't reading to socket");
+          // Reading responce
+          if (read(socket_fd, (char *) &ntp_p, sizeof(ntp_packet)) < 0)
+              err("ERROR: Can't reading to socket");
 
-            // Seconds
-            ntp_p.txTm_s = htonl(ntp_p.txTm_s);
-            // Fraction
-            ntp_p.txTm_f = htonl(ntp_p.txTm_f);
+          // Seconds
+          ntp_p.txTm_s = htonl(ntp_p.txTm_s);
+          // Fraction
+          ntp_p.txTm_f = htonl(ntp_p.txTm_f);
 
-            // Convert to time
-            time_t time = (time_t)(ntp_p.txTm_s - NTP_TIMESTAMP_DELTA);
-            char * time_str = ctime((time_t *) &time);
+          // Convert to time
+          time_t time = (time_t)(ntp_p.txTm_s - NTP_TIMESTAMP_DELTA);
+          char * time_str = ctime((time_t *) &time);
 
-            printf("%s", time_str);
-        }
-        if (i==2)
-        {
-            break;
-        }
+          printf("%s", time_str);
+          x=+1;
+          sleep(5);
+
     }
     return 0;
 }
